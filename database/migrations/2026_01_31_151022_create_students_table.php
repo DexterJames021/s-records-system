@@ -13,17 +13,18 @@ public function up(): void
 {
     Schema::create('students', function (Blueprint $table) {
         $table->id();
-        $table->integer('student_id')->unique();
-        $table->string('full_name');
+        $table->string('student_id')->unique()->nullable();
+        $table->string('first_name',100);
+        $table->string('middle_name',100)->nullable();
+        $table->string('last_name',100);
         $table->date('date_of_birth');
         $table->string('email')->unique();
-        $table->string('gender', 20);
+        $table->string('gender', 10);
         $table->string('course', 100);
         $table->string('year_level', 10);
         $table->timestamps();
 
         $table->index('student_id');
-        $table->index('full_name');
         $table->index('email');
     });
 }

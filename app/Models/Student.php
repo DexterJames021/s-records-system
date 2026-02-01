@@ -12,11 +12,25 @@ class Student extends Model
 
     protected $fillable = [
         'student_id',
-        'full_name',
+        'first_name',
+        'middle_name',
+        'last_name',
         'date_of_birth',
         'email',
         'gender',
         'course',
         'year_level'
     ];
+
+
+      public function generateStudentId()
+    {
+        $this->student_id = sprintf(
+            '%s-%04d-%03d',
+            now()->year,
+            $this->id,
+            random_int(100, 999)
+        );
+        $this->save();
+    }
 }

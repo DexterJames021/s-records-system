@@ -1,0 +1,147 @@
+@extends('layouts.layout')
+
+@section('contents')
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-200">
+                <h1 class="font-bold text-gray-800 mb-2 sm:mb-0">Create Student</h1>
+            </div>
+
+            <form method="POST" action="{{ route('students.store') }}"
+                class="w-full max-w-2xl mx-auto bg-white p-5 rounded-lg shadow-md" action="/submit-form" method="POST">
+                @csrf
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/3  px-2 mb-6 md:mb-0">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="fname_lbl" autofocus="true">
+                            First name
+                        </label>
+                        <input name="first_name" value="{{ old('first_name') }}"
+                            class=" block w-full bg-gray-50 text-gray-700 border border-gray-300  py-2 px-2   rounded mb-3 leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="fname_lbl" autofocus="true" type="text" placeholder="Jane">
+                        @error('first_name')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="w-full md:w-1/4 px-2">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="mname_lbl">
+                            Middle name
+                        </label>
+                        <input name="middle_name" value="{{ old('middle_name') }}"
+                            class=" block w-full bg-gray-50 text-gray-700 border border-gray-300  py-2 px-2   rounded leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="mname_lbl" type="text" placeholder="E">
+                        @error('middle_name')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="w-full md:w-1/3 px-2">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="lname_lbl">
+                            Last name
+                        </label>
+                        <input name="last_name" value="{{ old('last_name') }}"
+                            class=" block w-full bg-gray-50 text-gray-700 border border-gray-300  py-2 px-2   rounded leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="lname_lbl" type="text" placeholder="Doe">
+                        @error('last_name')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-full px-3">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="email_lbl">
+                            Email
+                        </label>
+                        <input name="email" value="{{ old('email') }}"
+                            class=" block w-full bg-gray-50 text-gray-700 border border-gray-300  py-2 px-2   rounded leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="email_lbl" type="email" placeholder="email@gmail.com">
+                        @error('email')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/2 px-3">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="gender_lbl">
+                            Gender
+                        </label>
+                        <div class="flex items-center space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="gender" value="male"
+                                    class="form-radio text-indigo-600"
+                                    {{ old('gender', $student->gender ?? '') == 'male' ? 'checked' : '' }}>
+                                <span class="ml-2 text-gray-700">Male</span>
+                            </label>
+
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="gender" value="female"
+                                    class="form-radio text-indigo-600"
+                                    {{ old('gender', $student->gender ?? '') == 'female' ? 'checked' : '' }}>
+                                <span class="ml-2 text-gray-700">Female</span>
+                            </label>
+                        </div>
+                        @error('gender')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="w-full md:w-1/2 px-3">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="dob_lbl">
+                            Date of Birth
+                        </label>
+                        <input name="date_of_birth" value="{{ old('date_of_birth') }}"
+                            class=" block w-full bg-gray-50 text-gray-700 border border-gray-300  py-2 px-2   rounded leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="dob_lbl" type="date" placeholder="Email@">
+                        @error('date_of_birth')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="year_lbl">
+                            Year Level
+                        </label>
+                        <select name="year_level"
+                            class="block  w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8  focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            id="year_lbl">
+                            <option selected disabled hidden>select year level</option>
+                            <option value="1">1 year</option>
+                            <option value="2">2 year</option>
+                            <option value="3">3 year</option>
+                        </select>
+                        @error('year_level')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="course_lbl">
+                            Course
+                        </label>
+                        <div class="relative">
+                            <select name="course"
+                                class="block  w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8  leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                id="course_lbl">
+                                <option selected disabled hidden>select course</option>
+                                <option value="IT">IT</option>
+                                <option value="CS">CS</option>
+                                <option value="CE">CE</option>
+                                <option value="IS">IS</option>
+                            </select>
+                            @error('course')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-1">
+                    <a href="{{ route('students.index') }}"
+                        class="flex justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-white hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        Cancel
+                    </a>
+                    <button
+                        class="flex justify-center rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+@endsection
