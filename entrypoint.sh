@@ -6,7 +6,7 @@ php artisan route:clear
 php artisan view:clear
 
 # Run migrations safely (for dev)
-php artisan migrate --force
+php artisan migrate:fresh --force
 
 # Start Laravel
 php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
