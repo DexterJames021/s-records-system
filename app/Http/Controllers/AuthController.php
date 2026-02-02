@@ -15,13 +15,17 @@ class AuthController extends Controller
    public function login(Request $request)
 {
     // Validate form input
+    $credentials = $request->validate([
+        "email"=> "required|email",
+        "password" => 'required',
+    ]);
 
     // Hardcoded test account
     $testEmail = 'student@example.com';
     $testPassword = 'password';
 
     // Check if input matches the test account exactly
-    if ($request['email'] === $testEmail && $request['password'] === $testPassword) {
+    if ($credentials['email'] === $testEmail && $credentials['password'] === $testPassword) {
 
         // Make sure the test user exists in database
         $user = \App\Models\User::firstOrCreate(
