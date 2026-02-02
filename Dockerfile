@@ -1,20 +1,28 @@
-FROM node:24 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Base PHP image
+FROM php:8.3-cli
 
-FROM php:8.3-fpm
-WORKDIR /var/www/html
-COPY --from=build /app /var/www/html
-RUN apt-get update && apt-get install -y libzip-dev unzip libpng-dev
-RUN docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
+# Install system deps
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev libpng-dev libonig-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip gd bcmath
+
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set workdir
+WORKDIR /app
+
+# Copy project
+COPY . .
+
+# Install PHP deps
 RUN composer install --no-dev --optimize-autoloader
-RUN chown -R www-data:www-data storage bootstrap/cache
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV PORT=10000
-EXPOSE $PORT
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+
+# Fix permissions
+RUN chmod -R 775 storage bootstrap/cache
+
+# Railway uses $PORT
+EXPOSE 8080
+
+# Start Laravel
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
