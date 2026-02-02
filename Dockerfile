@@ -1,7 +1,17 @@
-# Base PHP image
+# ---------- STAGE 1: Build frontend ----------
+FROM node:20-alpine AS frontend
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+
+# ---------- STAGE 2: PHP ----------
 FROM php:8.3-cli
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git unzip curl \
     libzip-dev libpng-dev libonig-dev \
@@ -10,29 +20,20 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql mbstring zip gd bcmath
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /app
 
-# Copy project files
+# Copy Laravel source
 COPY . .
 
-# Install PHP dependencies
+# Copy built frontend assets from Node stage
+COPY --from=frontend /app/public/build /app/public/build
+
 RUN composer install --no-dev --optimize-autoloader
 
-# Fix permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-# Clear Laravel cache (IMPORTANT for Railway)
-RUN php artisan config:clear \
- && php artisan cache:clear \
- && php artisan route:clear \
- && php artisan view:clear
-
-# Railway uses PORT env
 EXPOSE 8080
 
-# Start Laravel
 CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
