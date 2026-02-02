@@ -8,6 +8,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql mbstring zip gd bcmath
 
+# ---- INSTALL NODE + NPM ----
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
@@ -16,7 +20,7 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# FRONTEND BUILD (THIS FIXES YOUR ERROR)
+# FRONTEND BUILD 
 RUN npm install
 RUN npm run build
 
