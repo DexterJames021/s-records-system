@@ -1,5 +1,6 @@
 FROM php:8.3-cli
 
+# System dependencies
 RUN apt-get update && apt-get install -y \
     git unzip curl \
     libzip-dev libpng-dev libonig-dev \
@@ -8,25 +9,32 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql mbstring zip gd bcmath
 
-# ---- INSTALL NODE + NPM ----
+# Install Node.js (for Tailwind/Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+# Copy app files
 COPY . .
 
+# Backend deps
 RUN composer install --no-dev --optimize-autoloader
 
-# FRONTEND BUILD 
+# Frontend build (Tailwind/Vite)
 RUN npm install
 RUN npm run build
 
-
+# Permissions
 RUN chmod -R 775 storage bootstrap/cache
+
+# Entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8080
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+ENTRYPOINT ["/entrypoint.sh"]
