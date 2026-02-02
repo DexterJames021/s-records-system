@@ -22,6 +22,7 @@ public function up(): void
         $table->string('gender', 10);
         $table->string('course', 100);
         $table->string('year_level', 10);
+        $table->softDeletes();
         $table->timestamps();
 
         $table->index('student_id');
@@ -36,5 +37,8 @@ public function up(): void
     public function down(): void
     {
         Schema::dropIfExists('students');
+        Schema::table('students', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

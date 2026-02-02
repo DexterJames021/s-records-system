@@ -13,21 +13,11 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $students = Student::query()
-            ->when($request->search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%$search%")
-                        ->orWhere('last_name', 'like', "%$search%")
-                        ->orWhere('email', 'like', "%$search%")
-                        ->orWhere('student_id', 'like', "%$search%");
-                });
-            })
+        $students = Student::search($request->search)
             ->paginate(10)
             ->withQueryString();
 
-        return view('students.index', [
-            'students' => $students,
-        ]);
+        return view('students.index', compact('students'));
     }
 
     /**
