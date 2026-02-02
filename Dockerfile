@@ -16,6 +16,11 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+# FRONTEND BUILD (THIS FIXES YOUR ERROR)
+RUN npm install
+RUN npm run build
+
+
 RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
