@@ -1,21 +1,20 @@
-FROM richarvey/nginx-php-fpm:latest
-
+FROM node:24 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
 COPY . .
+RUN npm run build
 
-# Image config
-ENV SKIP_COMPOSER 1
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
-
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
-
-
-# Allow composer to run as root
-ENV COMPOSER_ALLOW_SUPERUSER 1
-
-CMD ["/start.sh"]
+FROM php:8.3-fpm
+WORKDIR /var/www/html
+COPY --from=build /app /var/www/html
+RUN apt-get update && apt-get install -y libzip-dev unzip libpng-dev
+RUN docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
+RUN chown -R www-data:www-data storage bootstrap/cache
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV PORT=10000
+EXPOSE $PORT
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
