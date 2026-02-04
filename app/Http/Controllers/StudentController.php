@@ -14,7 +14,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $students = Student::search($request->search)
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
         return view('students.index', compact('students'));

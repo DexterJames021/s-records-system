@@ -38,10 +38,17 @@ class Student extends Model
 
     public function scopeSearch($query, $term)
     {
-        if ($term) {
-            $query->where(function ($q) use ($term) {
-                foreach (['first_name', 'last_name', 'email', 'student_id'] as $col) {
-                    $q->orWhere($col, 'like', "%$term%");
+       if ($term) {
+            $columns = ['first_name', 'last_name','middle_name', 'email', 'student_id'];
+            $terms = preg_split('/\s+/', trim($term));
+
+            $query->where(function ($q) use ($terms, $columns) {
+                foreach ($terms as $word) {
+                    $q->where(function ($sub) use ($word, $columns) {
+                        foreach ($columns as $col) {
+                            $sub->orWhere($col, 'like', "%{$word}%");
+                        }
+                    });
                 }
             });
         }
