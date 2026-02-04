@@ -19,9 +19,10 @@
 
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 class="text-center text-3xl font-bold tracking-tight text-white mb-8">STUDENT RECORD SYSTEM</h2>
+            <h2 class="text-center text-5xl font-bold tracking-tight text-white ">✨ StudentHub ✨</h2>
+            <h3 class="text-center small text-gray-500 mb-10" >A Web-Based Student Records System</h3>
         </div>
-
+        
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg shadow-2xl p-8">
                 <form action="{{ route('login.store') }}" method="POST" class="space-y-6">

@@ -17,7 +17,7 @@
             <!-- hedaer -->
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
                 <div class="px-4 py-5 ">
-                    <h1 class=" text-xl font-bold text-gray-800 mb-2 sm:mb-0">Student List</h1>
+                    <h1 class=" text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Student List</h1>
                 </div>
                 <div
                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-200">

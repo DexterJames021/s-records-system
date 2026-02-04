@@ -14,13 +14,11 @@ class AuthController extends Controller
 
    public function login(Request $request)
 {
-    // Validate form input
     $credentials = $request->validate([
         "email"=> "required|email",
         "password" => 'required',
     ]);
 
-    // Hardcoded test account
     $testEmail = 'student@example.com';
     $testPassword = 'password';
 
