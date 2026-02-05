@@ -22,6 +22,7 @@ public function up(): void
         $table->string('gender', 10);
         $table->string('course', 100);
         $table->string('year_level', 10);
+        // $table->foreignId('subject')->constrained()->cascadeOnDelete;
         $table->softDeletes();
         $table->timestamps();
 

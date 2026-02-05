@@ -35,6 +35,7 @@ class StoreStudentRequest extends FormRequest
             'date_of_birth' => 'required|date|before:today',
             'course' => 'required|string',
             'year_level' => 'required|string',
+             'subjects.*' => 'exists:subjects,id',
         ];
     }
 }

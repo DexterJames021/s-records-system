@@ -134,6 +134,19 @@
                         @enderror
                         </div>
                     </div>
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="course_lbl">
+                            Subjects
+                        </label>
+                        @foreach ($student->subjects as $subject)
+                            <div class="mb-4">
+                                <label class="block font-semibold">{{ $subject->name }}</label>
+                                <input name="grades[{{ $subject->id }}]"
+                                        class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8 leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                </input>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
 
                 <div class="flex justify-end gap-1">

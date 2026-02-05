@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStudentRequest;
+use App\Mail\GradesUpdatedMail;
 use App\Models\Student;
+use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class StudentController extends Controller
 {
@@ -25,7 +28,10 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('students.create');
+        // $students = Student::with('subject')->get('name');
+        $subjects = Subject::all();
+
+        return view('students.create', compact('subjects'));
     }
 
     /**
@@ -44,6 +50,8 @@ class StudentController extends Controller
             'date_of_birth',
         ]));
 
+        $student->subjects()->attach($request->subjects);
+
         // Generate student ID
         $student->generateStudentId();
 
@@ -57,6 +65,8 @@ class StudentController extends Controller
     public function show(string $id)
     {
         $student = Student::findOrFail($id);
+
+        $student->average_grade = $student->subjects->avg('pivot.grade');
 
         return view('students.show', compact('student'));
     }
@@ -77,10 +87,44 @@ class StudentController extends Controller
     public function update(StoreStudentRequest $request, string $id)
     {
         $student = Student::findOrFail($id);
-        $student->update($request->all());
+
+        // ✅ Validate grades
+        $request->validate([
+            'grades' => 'nullable|array',
+            'grades.*' => 'nullable|integer|min:0|max:100',
+        ]);
+
+        // ✅ Update grades in pivot table
+        if ($request->filled('grades')) {
+            $syncData = [];
+
+            foreach ($request->grades as $subject_id => $grade) {
+                $syncData[$subject_id] = ['grade' => $grade];
+            }
+
+            $student->subjects()->syncWithoutDetaching($syncData);
+        }
+
+        // ✅ Update student info
+        $student->update($request->only([
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'gender',
+            'course',
+            'year_level',
+            'date_of_birth',
+        ]));
+
+        // ✅ Reload subjects so email has latest grades
+        $student->load('subjects');
+
+        // ✅ Send email AFTER update
+        Mail::to($student->email)->send(new GradesUpdatedMail($student));
 
         return redirect()->route('students.index')
-            ->with('success', 'Student updated successfully');
+            ->with('success', 'Student updated successfully and grades email sent.');
     }
 
     /**

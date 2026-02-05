@@ -25,6 +25,12 @@ class Student extends Model
         'year_level',
     ];
 
+    public function subjects(){
+        return $this->belongsToMany(Subject::class)
+            ->withPivot('grade')
+            ->withTimestamps();;
+    }
+
     public function generateStudentId()
     {
         $this->student_id = sprintf(
