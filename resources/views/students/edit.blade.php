@@ -9,16 +9,16 @@
                 </h1>
             </div>
 
-          @if ($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <strong class="font-bold">Please fix the following errors:</strong>
-                <ul class="mt-2 list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <strong class="font-bold">Please fix the following errors:</strong>
+                    <ul class="mt-2 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('students.update', $student->id) }}"
                 class="w-full max-w-2xl mx-auto bg-white p-5 rounded-lg shadow-md" action="/submit-form" method="POST">
@@ -172,7 +172,7 @@
                         @else
                         <div class="w-full md:w-1/2 px-3 my-6 md:mb-0">
                             <p class="block  text-gray-500 text-sm mt-4 font-small mb-2" for="course_lbl">
-                                Reselect atleast 5 Subject
+                                Reselect at least 5 subjects to input grades
                             </p>
                             <div class="grid">
                                 @foreach ($subjects as $subject)
