@@ -9,6 +9,17 @@
                 </h1>
             </div>
 
+          @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <strong class="font-bold">Please fix the following errors:</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
             <form method="POST" action="{{ route('students.update', $student->id) }}"
                 class="w-full max-w-2xl mx-auto bg-white p-5 rounded-lg shadow-md" action="/submit-form" method="POST">
                 @csrf
@@ -134,18 +145,71 @@
                         @enderror
                         </div>
                     </div>
-                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="course_lbl">
+                    <div class=" gap-5 md:w-1/2 px-3 mt-3 mb-6 md:mb-0">
+                        <label class="block  text-gray-700 text-xm font-bold mb-2" for="course_lbl">
                             Subjects
                         </label>
-                        @foreach ($student->subjects as $subject)
-                            <div class="mb-4">
-                                <label class="block font-semibold">{{ $subject->name }}</label>
-                                <input name="grades[{{ $subject->id }}]"
-                                        class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8 leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                                </input>
+                        @php
+                            $subjectCount = $student->subjects->count();
+                        @endphp
+                        
+                        @if(($subjectCount) >= 5) 
+                             @foreach ($student->subjects as $subject)
+                                <div class="mb-4">
+                                    <label class="text-gray-700 text-xs font-bold mb-2">
+                                        {{ $subject->name }}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="grades[{{ $subject->id }}]"
+                                        min="0"
+                                        max="100"
+                                        value="{{ old('grades.' . $subject->id, $subject->pivot->grade) }}"
+                                        class="w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8 leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                    >
+                                </div>
+                            @endforeach
+                        @else
+                        <div class="w-full md:w-1/2 px-3 my-6 md:mb-0">
+                            <p class="block  text-gray-500 text-sm mt-4 font-small mb-2" for="course_lbl">
+                                Reselect atleast 5 Subject
+                            </p>
+                            <div class="grid">
+                                @foreach ($subjects as $subject)
+                                <div class="flex">
+                                     <input
+                                        type="checkbox"
+                                        name="subjects[]"
+                                        value="{{ $subject->id }}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-700 rounded focus:ring-2 focus:ring-blue-500"
+                                        {{-- Pre-check already selected subjects or old input --}}
+                                        @checked(
+                                            old('subjects')
+                                                ? in_array($subject->id, old('subjects'))
+                                                : $student->subjects->contains($subject->id)
+                                        )
+                                    >
+                                    <label class="ml-2 text-gray-700">{{ $subject->name }}</label>
+                                </div>
+                                @endforeach
+                                @error('subjects[]')    
+                                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                @enderror
                             </div>
-                        @endforeach
+                        </div>
+                        @endif
+                        
+                    </div>
+                    <div class="md:w-1/2 mb-6 mt-10">
+                        <label class="inline-flex items-center gap-2 text-gray-700 text-sm font-medium">
+                            <input
+                                type="checkbox"
+                                name="send_email"
+                                value="1"
+                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            >
+                            Send grades to email
+                        </label>
                     </div>
                 </div>
 

@@ -56,9 +56,9 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Course
                                 </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Subject
-                                </th>
+                                </th> --}}
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Year Level
                                 </th>
@@ -83,11 +83,13 @@
                                         {{ $student->gender }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $student->course }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @foreach ($student->subjects as $subject)
+                                    {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @forelse ($student->subjects as $subject)
                                         {{ ($subject->name) }}
-                                        @endforeach
-                                    </td>
+                                        @empty
+                                        No Subject Enrolled
+                                        @endforelse
+                                    </td> --}}
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $student->year_level }}
                                     </td>
                                     <td class="px-6 flex py-5 whitespace-nowrap text-sm font-medium">

@@ -36,6 +36,8 @@ class StoreStudentRequest extends FormRequest
             'course' => 'required|string',
             'year_level' => 'required|string',
              'subjects.*' => 'exists:subjects,id',
+              'grades' => 'nullable|array|size:5',
+            'grades.*' => 'nullable|integer|min:0|max:100|array|size:5',
         ];
     }
 }

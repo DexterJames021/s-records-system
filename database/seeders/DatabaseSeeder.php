@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
             Subject::factory()->count(10)->create();
 
-        // $this->call(StudentSeeder::class);
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'student@example.com',
-        //     'password' => 'password',
-        // ]);
+        $this->call(StudentSeeder::class);
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'student@example.com',
+            'password' => 'password',
+        ]);
     }
 }

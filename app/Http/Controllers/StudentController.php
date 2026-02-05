@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Mail\GradesUpdatedMail;
 use App\Models\Student;
 use App\Models\Subject;
@@ -75,57 +76,69 @@ class StudentController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
-        $student = Student::findOrFail($id);
+    {      
+        $student = Student::with('subjects')->findOrFail($id); // load enrolled subjects
+        $subjects = Subject::all(); // get all available subjects
 
-        return view('students.edit', compact('student'));
+        return view('students.edit', compact('student', 'subjects'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreStudentRequest $request, string $id)
-    {
-        $student = Student::findOrFail($id);
+public function update(Request $request, string $id)
+{
+    $student = Student::with('subjects')->findOrFail($id);
 
-        // ✅ Validate grades
+    // 1️⃣ Handle subject reselection (if <5 subjects)
+    if ($request->filled('subjects')) {
         $request->validate([
-            'grades' => 'nullable|array',
+            'subjects' => 'required|array|size:5', // must select exactly 5
+            'subjects.*' => 'exists:subjects,id',
+        ]);
+
+        $student->subjects()->sync($request->subjects);
+    }
+
+    // 2️⃣ Handle grades (if 5 subjects already exist)
+    if ($request->filled('grades')) {
+        $request->validate([
+            'grades' => 'required|array',
             'grades.*' => 'nullable|integer|min:0|max:100',
         ]);
 
-        // ✅ Update grades in pivot table
-        if ($request->filled('grades')) {
-            $syncData = [];
-
-            foreach ($request->grades as $subject_id => $grade) {
-                $syncData[$subject_id] = ['grade' => $grade];
-            }
-
-            $student->subjects()->syncWithoutDetaching($syncData);
+        $syncData = [];
+        foreach ($request->grades as $subject_id => $grade) {
+            $syncData[$subject_id] = ['grade' => $grade];
         }
 
-        // ✅ Update student info
-        $student->update($request->only([
-            'first_name',
-            'middle_name',
-            'last_name',
-            'email',
-            'gender',
-            'course',
-            'year_level',
-            'date_of_birth',
-        ]));
-
-        // ✅ Reload subjects so email has latest grades
-        $student->load('subjects');
-
-        // ✅ Send email AFTER update
-        Mail::to($student->email)->send(new GradesUpdatedMail($student));
-
-        return redirect()->route('students.index')
-            ->with('success', 'Student updated successfully and grades email sent.');
+        $student->subjects()->syncWithoutDetaching($syncData);
     }
+
+    // 3️⃣ Update student info
+    $student->update($request->only([
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+        'gender',
+        'course',
+        'year_level',
+        'date_of_birth',
+    ]));
+
+    // 4️⃣ Reload subjects
+    $student->load('subjects');
+
+    // 5️⃣ Optional: send email
+    if ($request->boolean('send_email')) {
+        Mail::to($student->email)->send(new GradesUpdatedMail($student));
+    }
+
+    return redirect()->route('students.index')
+        ->with('success', 'Student updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.

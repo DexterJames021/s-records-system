@@ -17,6 +17,7 @@
     @yield('contents')
 </body>
 <script>
+
     setTimeout(function () {
         const toast = document.getElementById('toast');
         if (toast) {
@@ -25,6 +26,7 @@
             setTimeout(() => toast.remove(), 10);
         }
     }, 3000);
+
 </script>
 
 </html>

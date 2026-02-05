@@ -16,6 +16,18 @@
 
             <!-- Body -->
             <div class="px-6 py-4 space-y-3">
+
+                <div class="flex justify-between shadow p-3 rounded">
+                    <p class="text-gray-500"><span class="font-medium text-gray-600">Average:</span>
+                        {{ round($student->average_grade, 2) }}</p>
+
+                    <ul class="list-disc ml-6">
+                        @foreach ($student->subjects as $subject)
+                            <li class="text-gray-500">{{ $subject->name }}: {{ $subject->pivot->grade ?? 'N/A' }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+
                 <!-- Full Name -->
                 <div class="flex justify-between">
                     <span class="font-medium text-gray-600">Fullname:</span>
@@ -35,18 +47,6 @@
                     <span class="font-medium text-gray-600">Course:</span>
                     <span class="text-gray-500">{{ $student->course }}</span>
                 </div>
-
-
-                <div class="flex justify-between">
-                    <p><strong>Average Grade:</strong> {{ round($student->average_grade, 2) }}</p>
-
-                <ul class="list-disc ml-6">
-                    @foreach ($student->subjects as $subject)
-                        <li>{{ $subject->name }}: {{ $subject->pivot->grade ?? 'N/A' }}</li>
-                    @endforeach
-                </ul>
-                </div>
-
 
                 <!-- Year Level -->
                 <div class="flex justify-between">

@@ -130,24 +130,22 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label class="block  text-gray-700 text-xs font-bold mb-2" for="course_lbl">
+                    <div class="w-full md:w-full px-3 md:mb-0">
+                        <label class="block  text-gray-700 text-ml mt-4 font-bold mb-2" for="course_lbl">
                             Subject
+                            <span class="text-sm font-light text-gray-500">Select 5 subjects</span>
                         </label>
-                        <div class="relative">
-                            <select name="subjects[]" multiple
-                                class="block  w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-2 rounded pr-8  leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                id="subjects_lbl">
-                                    <option value="" selected disabled hidden>Select subject</option>
-                                    @foreach ($subjects as $subject)
-                                        <option value="{{ $subject->id }}" >
-                                            {{ $subject->name }}
-                                        </option>
-                                    @endforeach
-                            </select>
-                            @error('subjects')
-                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                            @enderror
+                        <div class="grid grid-cols-2">
+                            @foreach ($subjects as $subject)
+                                <div class="flex">
+                                    <input type="checkbox" name="subjects[]" value="{{ $subject->id }}"
+                                    class="subject-checkbox bg-gray-50 border border-gray-300 text-gray-700   rounded   leading-tight focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"> 
+                                    <label class="ml-3 text-gray-700">{{ $subject->name }} </label>
+                                </div>
+                            @endforeach
+                            <p id="subjectError" class="text-red-500 text-xs mt-2 hidden">
+                                Please select exactly 5 subjects.
+                            </p>
                         </div>
                     </div>
                 </div>
