@@ -3,6 +3,14 @@
 ## 📌 Project Task – Student Record System
 Goal: Build a simple Student Record System using Laravel (PHP 8+) and MySQL.
 
+### Instructions:
+
+1. When creating a student, assigning 5 subjects is optional.
+2. When updating a student (blue button), assigning 5 subjects is required for the grading system to be applied.
+3. After updating, submit the update form to store the grades.
+4. To view the average, click Show (eye button) to see the subjects along with their grades and average.
+5. Deleting a student does not permanently remove the record from the database.
+
 Requirements
 - laravel version 12.11.2
 - php 8.3.6
