@@ -153,7 +153,7 @@
                             $subjectCount = $student->subjects->count();
                         @endphp
                         
-                        @if(($subjectCount) >= 5) 
+                        @if(($subjectCount) == 5) 
                              @foreach ($student->subjects as $subject)
                                 <div class="mb-4">
                                     <label class="text-gray-700 text-xs font-bold mb-2">
